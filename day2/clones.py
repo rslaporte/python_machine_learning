@@ -31,13 +31,34 @@ features = [
     "Distância Ombro a ombro",
     "Tamanho do crânio",
     "Tamanho dos pés",
-    "General Jedi encarregado"
 ]
 
-X = df[features]
-X
+cat_features = [
+    "Distância Ombro a ombro",
+    "Tamanho do crânio",
+    "Tamanho dos pés",
+]
 
 # %%
 # Encoding the features in 1 or 0 variables
 from feature_engine import encoding
-onehot = encoding.OneHotEncoder(X)
+
+X = df[features]
+X
+
+onehot = encoding.OneHotEncoder(variables=cat_features)
+onehot.fit(X)
+X = onehot.transform(X)
+X
+# %%
+clone_tree = tree.DecisionTreeClassifier()
+clone_tree.fit(X, df["Status "])
+
+# %%
+plt.figure(dpi=600)
+tree.plot_tree(clone_tree,
+               class_names=clone_tree.classes_,
+               feature_names=X.columns,
+               filled=True,
+               max_depth=3
+)
